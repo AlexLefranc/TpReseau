@@ -11,15 +11,16 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 
-public class TpReseau extends ApplicationAdapter implements Runnable{
+public class TpReseau extends ApplicationAdapter implements Runnable {
 	
-	private static VuePoint vuePoint;
-	private static ConnexionReseau connexion = null;
+	private VuePoint vuePoint;
+	private ConnexionReseau connexion = null;
 	private ArrayList<Point<Float, Float>> listeDePoints;
 	
 	@Override
 	public void create () {
 		vuePoint = new VuePoint();
+		listeDePoints = new ArrayList<Point<Float,Float>>();
 		
 		Gdx.input.setInputProcessor(new InputAdapter () {
 			public boolean touchDown (int x, int y, int pointer, int button) {
@@ -36,18 +37,20 @@ public class TpReseau extends ApplicationAdapter implements Runnable{
 				return true;
 			}
 		});
+		
+		(new Thread(this)).start();
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		for (Point<Float, Float> point : listeDePoints)
 			vuePoint.dessinerPoint(point);
 	}
 	
-	public static void recuperationProprietes() throws Exception {
+	public void recuperationProprietes() throws Exception {
 		Field field = Class.forName("com.badlogic.gdx.graphics.Color").getField(connexion.getProp().getProperty("couleur"));
 		vuePoint.initialisationParametres((Color) field.get(null), Float.parseFloat(connexion.getProp().getProperty("rayon")));
 	}
@@ -58,8 +61,10 @@ public class TpReseau extends ApplicationAdapter implements Runnable{
 		
 		try {
 			/*Etablissement de la connexion et recuperation des proprietes*/
-			if (connexion == null) connexion = new ConnexionReseau();
-			recuperationProprietes();
+			if (connexion == null) {
+				connexion = new ConnexionReseau();
+				recuperationProprietes();
+			}
 			
 			/*Synchronisation du serveur et du client lors de leurs envoi/réception*/
 			synchronized(this) {
