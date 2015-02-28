@@ -3,6 +3,7 @@ package com.reseau;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -41,13 +42,20 @@ public class TpReseau extends ApplicationAdapter implements Runnable {
 		(new Thread(this)).start();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		for (Point<Float, Float> point : listeDePoints)
-			vuePoint.dessinerPoint(point);
+		@SuppressWarnings("rawtypes")
+		Iterator iterator = listeDePoints.iterator();
+		while(iterator.hasNext()) {
+			vuePoint.dessinerPoint((Point<Float, Float>) iterator.next());
+		}
+		
+		//for (Point<Float, Float> point : listeDePoints)
+		//	vuePoint.dessinerPoint(point);
 	}
 	
 	public void recuperationProprietes() throws Exception {
