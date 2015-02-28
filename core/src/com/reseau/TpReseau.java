@@ -53,9 +53,6 @@ public class TpReseau extends ApplicationAdapter implements Runnable {
 		while(iterator.hasNext()) {
 			vuePoint.dessinerPoint((Point<Float, Float>) iterator.next());
 		}
-		
-		//for (Point<Float, Float> point : listeDePoints)
-		//	vuePoint.dessinerPoint(point);
 	}
 	
 	public void recuperationProprietes() throws Exception {
